@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Cool Portfolio</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r134/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vanta@latest/dist/vanta.birds.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+        }
+        
+        .cursor-trail {
+            position: fixed;
+            width: 5px;
+            height: 5px;
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 9999;
+            mix-blend-mode: difference;
+        }
+
+        .send-message-btn {
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .send-message-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(120deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+            transition: all 0.4s ease;
+        }
+
+        .send-message-btn:hover::before {
+            left: 100%;
+        }
+
+        .send-message-btn:hover {
+            box-shadow: 0 0 15px rgba(255, 105, 180, 0.6);
+            transform: translateY(-3px);
+        }
+
+        #vanta-background {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+        }
+
+        .contact-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .contact-info {
+            flex: 1;
+            padding-right: 2rem;
+        }
+
+        .contact-form {
+            flex: 1;
+        }
+
+        .social-icons {
+            display: flex;
+            justify-content: center;
+            margin-top: 1rem;
+        }
+
+        .social-icons a {
+            margin: 0 0.5rem;
+            font-size: 1.5rem;
+            color: #fff;
+            transition: color 0.3s ease;
+        }
+
+        .social-icons a:hover {
+            color: #f472b6;
+        }
+
+        .input-group {
+            position: relative;
+            margin-bottom: 1.5rem;
+        }
+
+        .input-group input,
+        .input-group textarea {
+            width: 100%;
+            padding: 0.75rem;
+            background-color: rgba(255, 255, 255, 0.1);
+            border: none;
+            border-radius: 0.5rem;
+            color: #fff;
+            transition: all 0.3s ease;
+        }
+
+        .input-group label {
+            position: absolute;
+            top: 0.75rem;
+            left: 0.75rem;
+            color: rgba(255, 255, 255, 0.7);
+            transition: all 0.3s ease;
+            pointer-events: none;
+        }
+
+        .input-group input:focus,
+        .input-group textarea:focus {
+            background-color: rgba(255, 255, 255, 0.2);
+            outline: none;
+        }
+
+        .input-group input:focus + label,
+        .input-group textarea:focus + label,
+        .input-group input:not(:placeholder-shown) + label,
+        .input-group textarea:not(:placeholder-shown) + label {
+            top: -0.5rem;
+            left: 0.5rem;
+            font-size: 0.75rem;
+            background-color: #4a5568;
+            padding: 0 0.25rem;
+        }
+
+        .skill-card {
+            transition: all 0.3s ease;
+        }
+
+        .skill-card:hover {
+            transform: translateY(-10px) scale(1.05);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+        }
+
+        .skill-icon {
+            transition: all 0.3s ease;
+        }
+
+        .skill-card:hover .skill-icon {
+            transform: rotate(360deg) scale(1.2);
+        }
+
+        .skill-name {
+            transition: all 0.3s ease;
+        }
+
+    </style>
+</head>
+<body class="bg-gradient-to-br from-purple-900 to-indigo-900 text-white min-h-screen">
+    <div id="vanta-background"></div>
+    <header class="py-6 px-4 sm:px-6 lg:px-8">
+        <nav class="flex justify-between items-center">
+            <h1 class="text-3xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-pink-500 to-yellow-500 cursor-pointer">Vishal Kumar</h1>
+            <ul class="flex space-x-6">
+                <li><a href="#about" class="hover:text-pink-400 transition duration-300">About</a></li>
+                <li><a href="#skills" class="hover:text-pink-400 transition duration-300">Skills</a></li>
+                <li><a href="#projects" class="hover:text-pink-400 transition duration-300">Projects</a></li>
+                <li><a href="#contact" class="hover:text-pink-400 transition duration-300">Contact</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main class="container mx-auto px-4 sm:px-6 lg:px-8 mt-16">
+        <section id="about" class="mb-24 text-center">
+            <h2 class="text-5xl font-bold mb-8 animate-pulse">
+                <span id="typing-text"></span>
+                <span class="cursor-blink">|</span>
+            </h2>
+            <p class="text-xl max-w-2xl mx-auto leading-relaxed">A passionate web developer crafting digital experiences with a blend of creativity and code. Let's turn ideas into reality!</p>
+        </section>
+
+        <section id="skills" class="mb-24">
+            <h2 class="text-4xl font-bold mb-12 text-center">My Skills</h2>
+            <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+                <div class="bg-white bg-opacity-10 p-6 rounded-lg backdrop-filter backdrop-blur-lg hover:shadow-xl transition duration-300 transform hover:-translate-y-2 skill-card flex flex-col items-center justify-center">
+                    <span class="text-4xl mb-2 skill-icon">💻</span>
+                    <h3 class="text-xl font-semibold skill-name">HTML/CSS</h3>
+                </div>
+                <div class="bg-white bg-opacity-10 p-6 rounded-lg backdrop-filter backdrop-blur-lg hover:shadow-xl transition duration-300 transform hover:-translate-y-2 skill-card flex flex-col items-center justify-center">
+                    <span class="text-4xl mb-2 skill-icon">🚀</span>
+                    <h3 class="text-xl font-semibold skill-name">JavaScript</h3>
+                </div>
+                <div class="bg-white bg-opacity-10 p-6 rounded-lg backdrop-filter backdrop-blur-lg hover:shadow-xl transition duration-300 transform hover:-translate-y-2 skill-card flex flex-col items-center justify-center">
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/a/a7/React-icon.svg" alt="React JS" class="w-16 h-16 mb-2 skill-icon">
+                    <h3 class="text-xl font-semibold skill-name">React JS</h3>
+                </div>
+                <div class="bg-white bg-opacity-10 p-6 rounded-lg backdrop-filter backdrop-blur-lg hover:shadow-xl transition duration-300 transform hover:-translate-y-2 skill-card flex flex-col items-center justify-center">
+                    <span class="text-4xl mb-2 skill-icon">🐍</span>
+                    <h3 class="text-xl font-semibold skill-name">Python</h3>
+                </div>
+                <div class="bg-white bg-opacity-10 p-6 rounded-lg backdrop-filter backdrop-blur-lg hover:shadow-xl transition duration-300 transform hover:-translate-y-2 skill-card flex flex-col items-center justify-center">
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/4/4c/Typescript_logo_2020.svg" alt="TypeScript" class="w-16 h-16 mb-2 skill-icon">
+                    <h3 class="text-xl font-semibold skill-name">TypeScript</h3>
+                </div>
+                <div class="bg-white bg-opacity-10 p-6 rounded-lg backdrop-filter backdrop-blur-lg hover:shadow-xl transition duration-300 transform hover:-translate-y-2 skill-card flex flex-col items-center justify-center">
+                    <span class="text-4xl mb-2 skill-icon">🍃</span>
+                    <h3 class="text-xl font-semibold skill-name">MongoDB</h3>
+                </div>
+                <div class="bg-white bg-opacity-10 p-6 rounded-lg backdrop-filter backdrop-blur-lg hover:shadow-xl transition duration-300 transform hover:-translate-y-2 skill-card flex flex-col items-center justify-center">
+                    <span class="text-4xl mb-2 skill-icon">⚡</span>
+                    <h3 class="text-xl font-semibold skill-name">Express JS</h3>
+                </div>
+                <div class="bg-white bg-opacity-10 p-6 rounded-lg backdrop-filter backdrop-blur-lg hover:shadow-xl transition duration-300 transform hover:-translate-y-2 skill-card flex flex-col items-center justify-center">
+                    <img src="https://nodejs.org/static/images/logo.svg" alt="Node JS" class="w-16 h-16 mb-2 skill-icon">
+                    <h3 class="text-xl font-semibold skill-name">Node JS</h3>
+                </div>
+            </div>
+        </section>
+
+        <section id="projects" class="mb-24">
+            <h2 class="text-4xl font-bold mb-12 text-center">My Projects</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <div class="bg-white bg-opacity-10 p-6 rounded-lg backdrop-filter backdrop-blur-lg hover:shadow-xl transition duration-300 transform hover:-translate-y-2">
+                    <h3 class="text-2xl font-semibold mb-4 text-pink-400">News Monkey</h3>
+                    <p class="text-gray-300 mb-4">Developed a front-end web application, "News Monkey," using React.js to provide users with real-time access
+                        to news articles from various sources. Implemented API integration to fetch news data, ensuring a dynamic
+                        and informative user experience. Focused on creating a responsive and user-friendly design, optimizing the
+                        application for seamless access across different devices</p>
+                    <p class="text-gray-300 mb-4"><strong>Technologies used:</strong> React JS, JavaScript, HTML5, Bootstrap</p>
+                    <ul class="text-gray-300 mb-4 list-disc list-inside">
+                        <li>The news application features API integration for real-time updates</li>
+                        <li>Responsive design for seamless user experience</li>
+                        <li>A user-friendly interface for easy navigation.</li>
+                    </ul>
+                    <a href="https://github.com/VishaL-Kumar25/news-app" target="_blank" rel="noopener noreferrer" class="text-pink-400 hover:text-pink-300 transition duration-300">View Project →</a>
+                </div>
+                <div class="bg-white bg-opacity-10 p-6 rounded-lg backdrop-filter backdrop-blur-lg hover:shadow-xl transition duration-300 transform hover:-translate-y-2">
+                    <h3 class="text-2xl font-semibold mb-4 text-pink-400">Text Utils</h3>
+                    <p class="text-gray-300 mb-4">The Text Utils project is a versatile tool designed to simplify text manipulation and analysis tasks. It offers a range of functionalities such as character counting, word counting, word frequency analysis, text capitalization, text conversion (uppercase/lowercase), and more. This project is designed to be user-friendly and efficient, making it a valuable asset for writers, students, and anyone who frequently works with text data.</p>
+                    <p class="text-gray-300 mb-4"><strong>Technologies used:</strong> React JS, JavaScript, HTML5, Tailwind CSS</p>
+                    <ul class="text-gray-300 mb-4 list-disc list-inside">
+                        <li>Versatile tool for text manipulation and analysis</li>
+                        <li>Offering features like character counting, word counting, word frequency analysis, and more.</li>
+                        <li>User-friendly and efficient.</li>
+                    </ul>
+                    <a href="https://vishal-kumar25.github.io/textutils-react/" target="_blank" rel="noopener noreferrer" class="text-pink-400 hover:text-pink-300 transition duration-300">View Project →</a>
+                </div>
+                <div class="bg-white bg-opacity-10 p-6 rounded-lg backdrop-filter backdrop-blur-lg hover:shadow-xl transition duration-300 transform hover:-translate-y-2">
+                    <h3 class="text-2xl font-semibold mb-4 text-pink-400">Scatch</h3>
+                    <p class="text-gray-300 mb-4">Built a robust back-end e-commerce solution, "Scatch," utilizing Node.js, Express.js, and MongoDB.
+                        Implemented core functionalities like product management, secure user authentication/authorization, and
+                        streamlined order processing. EJS templating enabled dynamic server-side rendering.</p>
+                    <p class="text-gray-300 mb-4"><strong>Technologies used:</strong> Node.js, Express.js, MongoDB, EJS, Tailwind CSS</p>
+                    <ul class="text-gray-300 mb-4 list-disc list-inside">
+                        <li>Node.js-based e-commerce platform with product management, secure authentication.</li>
+                        <li>Dynamic server-side rendering using EJS templating.</li>
+                        <li>A comprehensive admin panel for managing products, orders, and users.</li>
+                    </ul>
+                    <a href="https://github.com/VishaL-Kumar25/scatch" target="_blank" rel="noopener noreferrer" class="text-pink-400 hover:text-pink-300 transition duration-300">View Project →</a>
+                </div>
+            </div>
+        </section>
+
+        <section id="contact" class="mb-24">
+            <h2 class="text-4xl font-bold mb-12 text-center">Get In Touch</h2>
+            <div class="contact-container">
+                <div class="contact-info">
+                    <h3 class="text-2xl font-semibold mb-4">Let's Connect</h3>
+                    <p class="mb-4">I'm always open to new opportunities and collaborations. Feel free to reach out!</p>
+                    <p class="mb-2"><strong>Phone:</strong> <a href="tel:+918816087825" class="text-pink-400 hover:text-pink-300 transition duration-300">+91 8816087825</a></p>
+                    <p class="mb-2"><strong>Email:</strong> <a href="mailto:vk737880@gmail.com" class="text-pink-400 hover:text-pink-300 transition duration-300">vk737880@gmail.com</a></p>
+                    <p class="mb-4"><strong>Location:</strong> Hisar, Haryana</p>
+                    
+                </div>
+                <form class="contact-form" action="https://formsubmit.co/vk737880@gmail.com" method="POST">
+                    <div class="input-group">
+                        <input type="text" id="name" name="name" placeholder=" " required>
+                        <label for="name">Your Name</label>
+                    </div>
+                    <div class="input-group">
+                        <input type="email" id="email" name="email" placeholder=" " required>
+                        <label for="email">Your Email</label>
+                    </div>
+                    <div class="input-group">
+                        <textarea id="message" name="message" rows="4" placeholder=" " required></textarea>
+                        <label for="message">Your Message</label>
+                    </div>
+                    <button type="submit" class="w-full bg-gradient-to-r from-pink-500 to-yellow-500 text-white font-semibold py-3 px-6 rounded-lg send-message-btn">Send Message</button>
+                </form>
+            </div>
+        </section>
+    </main>
+
+    <footer class="text-center py-6">
+        <p>&copy; 2023 Vishal Kumar. Crafted with ❤️ and code.</p>
+        <div class="social-icons mt-4">
+            <a href="https://github.com/VishaL-Kumar25" target="_blank" rel="noopener noreferrer">
+                <i class="fab fa-github"></i>
+            </a>
+            <a href="https://www.linkedin.com/in/vishal-kumar-4024a121b/" target="_blank" rel="noopener noreferrer">
+                <i class="fab fa-linkedin"></i>
+            </a>
+            <a href="https://www.instagram.com/vishal_kumar_25_/" target="_blank" rel="noopener noreferrer">
+                <i class="fab fa-instagram"></i>
+            </a>
+        </div>
+    </footer>
+
+    <script>
+        const texts = [
+            "Hello, I'm Vishal Kumar",
+            "I'm a Web Developer",
+            "I love creating amazing experiences"
+        ];
+        const typingText = document.getElementById('typing-text');
+        let textIndex = 0;
+        let charIndex = 0;
+
+        function typeWriter() {
+            if (charIndex < texts[textIndex].length) {
+                typingText.innerHTML += texts[textIndex].charAt(charIndex);
+                charIndex++;
+                setTimeout(typeWriter, 100);
+            } else {
+                setTimeout(eraseText, 2000);
+            }
+        }
+
+        function eraseText() {
+            if (charIndex > 0) {
+                typingText.innerHTML = texts[textIndex].substring(0, charIndex - 1);
+                charIndex--;
+                setTimeout(eraseText, 50);
+            } else {
+                textIndex = (textIndex + 1) % texts.length;
+                setTimeout(typeWriter, 500);
+            }
+        }
+
+        window.onload = () => {
+            typeWriter();
+            VANTA.BIRDS({
+                el: "#vanta-background",
+                mouseControls: true,
+                touchControls: true,
+                gyroControls: false,
+                minHeight: 200.00,
+                minWidth: 200.00,
+                scale: 1.00,
+                scaleMobile: 1.00,
+                backgroundColor: 0x23153c,
+                color1: 0xff00f0,
+                color2: 0x00ffff,
+                colorMode: "variance",
+                birdSize: 1.50,
+                wingSpan: 20.00,
+                speedLimit: 5.00,
+                separation: 50.00,
+                alignment: 50.00,
+                cohesion: 50.00,
+                quantity: 3.00
+            });
+        };
+
+        // Cursor trail effect
+        const trailLength = 20;
+        const trail = [];
+
+        for (let i = 0; i < trailLength; i++) {
+            const dot = document.createElement('div');
+            dot.className = 'cursor-trail';
+            document.body.appendChild(dot);
+            trail.push(dot);
+        }
+
+        document.addEventListener('mousemove', (e) => {
+            const x = e.clientX;
+            const y = e.clientY;
+
+            trail.forEach((dot, index) => {
+                setTimeout(() => {
+                    dot.style.left = `${x}px`;
+                    dot.style.top = `${y}px`;
+
+                    const hue = ((x / window.innerWidth) * 360 + index * 10) % 360;
+                    dot.style.backgroundColor = `hsl(${hue}, 100%, 50%)`;
+                    dot.style.boxShadow = `0 0 10px 2px hsl(${hue}, 100%, 50%)`;
+                }, index * 30);
+            });
+        });
+    </script>
+
+    <style>
+        @keyframes blink {
+            0% { opacity: 0; }
+            50% { opacity: 1; }
+            100% { opacity: 0; }
+        }
+
+        .cursor-blink {
+            animation: blink 0.7s infinite;
+        }
+    </style>
+</body>
+</html>
